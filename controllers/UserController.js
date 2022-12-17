@@ -69,10 +69,33 @@ const authUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+const updateUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
+
+    if (req.body.password) {
+      user.password = await bcrypt.hash(req.body.password, 10);
+    }
+    const updateduser = await user.save();
+
+    res.json({
+      name: updateUser.name,
+      email: updateUser.email,
+    });
+  } else {
+    res.status(404);
+    throw new Error("user not found");
+  }
+};
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   deleteUser,
   authUser,
+  updateUser,
 };
