@@ -10,6 +10,7 @@ const protect = async (req, res, next) => {
   ) {
     try {
       const decoed = jwt.verify(token, process.env.JWT_SERCET);
+      req.user = await User.findById(decoed.id).select("-password");
       console.log("decoded", decoed);
       next();
     } catch (error) {
